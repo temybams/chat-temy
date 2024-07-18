@@ -6,11 +6,13 @@ import cookieSession from 'cookie-session';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
-
-import usersRouter from './routes/usersRoutes';
-import indexRouter from './routes/indexRoutes';
+import connectDB from './config/dbConfig';
+import authRoutes from './routes/authRoutes';
+import messageRoutes from './routes/messageRoutes';
+import conversationRoutes from './routes/conversationRoutes';
 
 dotenv.config();
+connectDB();
 const app: Application = express();
 
 
@@ -24,9 +26,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/conversations", conversationRoutes);
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {

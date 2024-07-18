@@ -9,9 +9,12 @@ const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
-const usersRoutes_1 = __importDefault(require("./routes/usersRoutes"));
-const indexRoutes_1 = __importDefault(require("./routes/indexRoutes"));
+const dbConfig_1 = __importDefault(require("./config/dbConfig"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const messageRoutes_1 = __importDefault(require("./routes/messageRoutes"));
+const conversationRoutes_1 = __importDefault(require("./routes/conversationRoutes"));
 dotenv_1.default.config();
+(0, dbConfig_1.default)();
 const app = (0, express_1.default)();
 // view engine setup
 app.set('views', path_1.default.join(__dirname, '..', 'views'));
@@ -21,8 +24,9 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static(path_1.default.join(__dirname, '..', 'public')));
-app.use('/', indexRoutes_1.default);
-app.use('/users', usersRoutes_1.default);
+app.use("/api/auth", authRoutes_1.default);
+app.use("/api/messages", messageRoutes_1.default);
+app.use("/api/conversations", conversationRoutes_1.default);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
     next((0, http_errors_1.default)(404));
