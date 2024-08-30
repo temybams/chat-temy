@@ -1,8 +1,9 @@
 import { Request } from 'express'
-import { IUser } from '../models/userModel'
+import { SignupDto } from '../dto'
+import { Types } from 'mongoose'; 
 
 
-type RequestUser = Omit<IUser, 'password'>
+type RequestUser = Omit<SignupDto, 'password'> & { _id: Types.ObjectId }
 
 type RequestWithUser = Request & {
     user?: RequestUser
