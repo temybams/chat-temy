@@ -9,4 +9,7 @@ const ChatSchema = z.object({
     groupAdmin: z.string().uuid().optional(),
 });
 
-export { ChatSchema } 
+const CreateChatSchema = z.object({
+    userId: z.string().min(1, 'User ID is required'),
+});
+export { ChatSchema, CreateChatSchema} 

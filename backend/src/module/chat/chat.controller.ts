@@ -1,44 +1,31 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import { catchAsync } from '../../middlewares'
 import { RequestWithUser } from '../../types/request.types'
 import { ChatDto } from '../../dto';
 import ChatService from './chat.service';
+import { Types } from 'mongoose';
+
 
 const ChatController = {
+    createChatController: catchAsync(async (req: RequestWithUser, res: Response) => {
 
-    accessChat: catchAsync(async (req: RequestWithUser, res: Response) => {
-        if (!req.user) {
-            return res.status(404).send({ message: 'User not authenticated' });
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'User ID is required' });
         }
 
-        const chat = await ChatService.accessChat(req.body, req.user);
-
-        res.status(200).json(chat);
+        const chat = await ChatService.createChat(req.user!._id, userId);
+        res.status(201).json({ success: true, message: "Chat created successfully", data: chat });
     }),
 
-    fetchChats: catchAsync(async (req: RequestWithUser, res: Response) => {
-        if (!req.user) {
-            return res.status(404).send({ message: 'User not authenticated' });
-        }
+    fetchChatsController: catchAsync(async (req: RequestWithUser, res: Response) => {
 
-        const chats = await ChatService.fetchChats(req.user);
+        const userId = req.user!._id;
 
-        res.status(200).json(chats);
-    }),
+        const chats = await ChatService.fetchChats(userId);
 
-    createGroupChat: catchAsync(async (req: RequestWithUser, res: Response) => {
-        
-            // Ensure the user is authenticated
-            if (!req.user) {
-                return res.status(404).json({ message: "Unauthorized access" });
-            }
-
-            const groupChat = await ChatService.createGroupChat(req.body, req.user);
-
-            res.status(200).json(groupChat);
-        
+        res.status(200).json({ success: true, message: "Chat fetched successfully", data: chats });
     })
-
 }
 
 export default ChatController
