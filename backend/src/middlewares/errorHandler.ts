@@ -11,7 +11,7 @@ const errorHandler = (
         return res.status(err.status || 500).json({
             success: false,
             message: err.message || 'Internal Server Error',
-            error: {},
+            error: err.stack,
         })
     }
     console.error(`Error: ${err.message}`)
@@ -22,7 +22,7 @@ const errorHandler = (
             message:
                 err.message ||
                 'An unexpected error occurred. Please try again later.',
-            error: {},
+            error: err.stack,
         })
     } else {
         return res.status(err.status || 500).json({
